@@ -1,0 +1,21 @@
+@startuml mono_context
+
+title Warmhouse as-is context diagram
+
+top to bottom direction
+
+!include ../lib/C4_Context.puml
+
+Person(user, "User", "А resident of the house using the system")
+Person(admin, "Admin", "An admin setting up the system")
+
+System(warmhouse, "Warmhouse", "A heating control system in the house")
+
+System_Ext(sensors, "Sensors", "Sensors installed in homes")
+
+Rel(user, warmhouse, "Monitors & set the temp")
+Rel(admin, warmhouse, "Connects the equipment to the system")
+Rel(sensors, warmhouse, "Temperature telemetry")
+Rel(warmhouse, sensors, "Commands")
+
+@enduml
