@@ -1,0 +1,49 @@
+@startuml msa_components_ext_api
+
+' Initial settings:
+
+title External API component diagram
+
+top to bottom direction
+
+!include ../../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Person(user, "User", "А resident of the house using the system")
+
+Container_Boundary(ext_api, "External API") {
+    Component(web_bff, "Web API BFF", "REST API")
+    Component(mobile_bff, "Mobile API BFF", "REST API")
+    Component(tm_sender, "Telemetry sender", "SSE/Long polling/WebSockets")
+    Component(grpc_router, "Router", "GRPC")
+    Component(auth, "Auth service", "Auth operations")
+}
+
+Container(devices, "Devices", "Devices management")
+Container(users, "Users", "Users management")
+Container(rules, "Auto rules", "Devices interrelations")
+Container(integrs, "Ext integrations", "External integrations")
+
+
+' Relations:
+
+Rel(user, web_bff, "Request")
+Rel(web_bff, grpc_router, "Request")
+Rel(web_bff, auth, "Request")
+
+Rel(user, mobile_bff, "Operations")
+Rel(mobile_bff, grpc_router, "Request")
+Rel(mobile_bff, auth, "Request")
+
+Rel(tm_sender, user, "Telemetry")
+Rel(grpc_router, tm_sender, "Telemetry")
+
+Rel(grpc_router, devices, "Devices cmds & ops")
+Rel(devices, grpc_router, "Telemetry")
+Rel(grpc_router, users, "Users operations")
+Rel(grpc_router, rules, "Auto rules operations")
+Rel(grpc_router, integrs, "Integrations operations")
+
+@enduml

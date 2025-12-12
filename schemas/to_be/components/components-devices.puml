@@ -1,0 +1,45 @@
+@startuml msa_components_devices
+
+' Initial settings:
+
+title Devices component diagram
+
+top to bottom direction
+
+!include ../../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Container_Boundary(devices, "Phys devices representation") {
+    Component(api, "Devices API", "GRPC")
+    Component(manager, "Devices manager", "Devices ops & cmds")
+    Component(msg_broker_api, "Messages broker API", "Send/recv messages")
+}
+
+ContainerDb(tm_db, "Telemetry DB", "Timeseries DB")
+ContainerDb(dev_db, "Devices DB", "Devices data")
+Container(ext_api, "External API", "External API")
+ContainerQueue(msg_broker, "Messages broker", "Сontainers communication broker")
+
+System_Ext(devices_phys, "Phys devices", "Phys devices installed in houses")
+
+
+' Relations:
+
+Rel(ext_api, api, "Devices cmds & ops")
+Rel(api, manager, "Cmds & ops handlers")
+Rel(manager, devices_phys, "Command")
+Rel(manager, dev_db, "Devices ops")
+
+Rel(devices_phys, manager, "Telemetry")
+Rel(manager, tm_db, "Telemetry")
+Rel(manager, api, "Telemetry")
+Rel(api, ext_api, "Telemetry")
+
+Rel(msg_broker_api, manager , "Ext event")
+Rel(manager, msg_broker_api, "Dev public event")
+Rel(msg_broker, msg_broker_api, "Ext event")
+Rel(msg_broker_api, msg_broker, "Dev public event")
+
+@enduml

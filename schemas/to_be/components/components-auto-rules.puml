@@ -1,0 +1,36 @@
+@startuml msa_components_auto_rules
+
+' Initial settings:
+
+title Auto rules component diagram
+
+top to bottom direction
+
+!include ../../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Container_Boundary(auto_rules, "Auto rules management") {
+    Component(api, "Auto rules API", "GRPC")
+    Component(manager, "Auto rules manager", "Auto rules operations")
+    Component(msg_broker_api, "Messages broker API", "Send/recv messages")
+}
+
+ContainerDb(rules_db, "Auto rules DB", "Auto rules data")
+Container(ext_api, "External API", "External API")
+ContainerQueue(msg_broker, "Messages broker", "Сontainers communication broker")
+
+
+' Relations:
+
+Rel(ext_api, api, "Auto rules operations")
+Rel(api, manager, "Ops handlers")
+Rel(manager, rules_db, "Auto rules ops")
+
+Rel(msg_broker_api, manager , "Ext event")
+Rel(manager, msg_broker_api, "Auto rules public event")
+Rel(msg_broker, msg_broker_api, "Ext event")
+Rel(msg_broker_api, msg_broker, "Auto rules public event")
+
+@enduml

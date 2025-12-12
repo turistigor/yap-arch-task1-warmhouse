@@ -1,0 +1,67 @@
+@startuml msa_containers
+
+' Initial settings:
+
+title Smarthouse to-be component diagram
+
+top to bottom direction
+
+!include ../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Person(user, "User", "А resident of the house using the system")
+
+Container_Boundary(smarthouse, "Smarthouse") {
+    Container(ext_api, "External API", "REST API")
+    ContainerQueue(msg_broker, "Messages broker", "Сontainers communication broker")
+    Container(devices, "Devices", "Devices management")
+    ContainerDb(tm_db, "Telemetry DB", "Timeseries DB")
+    ContainerDb(dev_db, "Devices DB", "Devices data")
+    Container(users, "Users", "Users management")
+    ContainerDb(users_db, "Users DB", "Users data")
+    Container(rules, "Auto rules", "Devices interrelations")
+    ContainerDb(rules_db, "Auto rules DB", "Auto rules data")
+    Container(integrs, "Ext integrations", "External integrations")
+    ContainerDb(integrations_db, "Integrations DB", "Integrations data")
+}
+
+System_Ext(devices_phys, "Phys devices", "Phys devices installed in houses")
+System_Ext(third_party, "Third-party system", "Messengers, payment, emergency, etc.")
+
+
+' Relations:
+
+Rel(user, ext_api, "Devices ops & cmds")
+Rel(ext_api, devices, "Devices ops & cmds")
+Rel(devices, devices_phys, "Devices cmds")
+Rel(devices, msg_broker, "Devices public events")
+Rel(devices, dev_db, "Devices ops")
+Rel(devices, tm_db, "Telemetry")
+
+Rel(devices_phys, devices, "Telemetry")
+Rel(devices, ext_api, "Telemetry")
+Rel(ext_api, user, "Telemetry")
+
+Rel(user, ext_api, "Users ops")
+Rel(ext_api, users, "Users ops")
+Rel(users, msg_broker, "Users public events")
+Rel(users, users_db, "Users ops")
+
+Rel(ext_api, integrs, "Ext integrations ops")
+Rel(integrs, third_party, "Ext integrations ops")
+Rel(integrs, msg_broker, "Ext integrations public events")
+Rel(integrs, integrations_db, "Integrations ops")
+Rel(third_party, integrs, "Ext events")
+
+Rel(ext_api, rules, "Auto rules ops")
+Rel(rules, msg_broker, "Auto rules public events")
+Rel(rules, rules_db, "Auto rules ops")
+
+Rel(msg_broker, devices, "Msgs for devices")
+Rel(msg_broker, users, "Msgs for users")
+Rel(msg_broker, integrs, "Msgs for ext integrations")
+Rel(msg_broker, rules, "Msgs for rules")
+
+@enduml

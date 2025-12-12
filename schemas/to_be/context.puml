@@ -1,0 +1,33 @@
+@startuml msa_context
+
+' Initial settings:
+
+title Smarthouse to-be context diagram
+
+top to bottom direction
+
+!include ../lib/C4_Context.puml
+
+
+' Actors & components:
+
+Person(user, "User", "А resident of the house using the system")
+
+System(smarthouse, "Smarthouse", "A smart house system")
+
+
+System_Ext(devices, "Devices", "Devices installed in homes")
+System_Ext(third_party, "Third-party system", "Messengers, payment, emergency, etc.")
+
+
+' Relations:
+
+Rel(user, smarthouse, "Operations")
+Rel(smarthouse, user, "Telemetry/events")
+Rel(smarthouse, devices, "Commands")
+Rel(devices, smarthouse, "Telemetry")
+Rel(smarthouse, third_party, "Notifications")
+Rel(third_party, smarthouse, "Notifications")
+
+
+@enduml

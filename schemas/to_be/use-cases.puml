@@ -1,0 +1,57 @@
+@startuml msa_use_cases
+
+' Initial settings:
+
+title Smarthouse use-cases diagram
+
+left to right direction
+
+
+' Actors & components:
+
+actor User as user
+
+rectangle Smarthouse {
+    rectangle "Device use-cases" {
+        usecase "Device commands" as uc_dev_cmd
+        usecase "Device operations" as uc_dev_ops
+        usecase "Telemetry/event received" as uc_tm_event
+    }
+    rectangle "Auto rule use-cases" {
+        usecase "Auto rule operations" as uc_auto_rule_ops
+        usecase "Auto rule events" as uc_auto_rule_events
+    }
+    rectangle "Ext integration use-cases" {
+        usecase "Ext integrations operations" as uc_integr_ops
+        usecase "Ext integration interrelation" as uc_integr_inter
+    }
+    rectangle "Users use-cases" {
+        usecase "Users operations" as uc_users_ops
+    }
+}
+rectangle Devices as devs
+rectangle "Third-party systems" as third_party
+
+
+' Relations:
+
+user --> uc_dev_cmd : "Cmd to device"
+uc_dev_cmd --> devs : "Cmd to device"
+
+user --> uc_users_ops: "Users operations"
+
+user --> uc_dev_ops : "Reg/unreg device"
+
+devs --> uc_tm_event: "Telemetry/event"
+uc_tm_event --> user: "Telemetry/event"
+
+user --> uc_auto_rule_ops: "Add/remove auto rule"
+uc_auto_rule_events --> user: "Auto rules events"
+
+user --> uc_integr_ops: "Add/remove ext integrations"
+uc_integr_ops --> third_party: "Add/remove ext integrations"
+
+uc_integr_inter --> user: "Ext integration events"
+uc_integr_inter <--> third_party: "Events exchange"
+
+@enduml
