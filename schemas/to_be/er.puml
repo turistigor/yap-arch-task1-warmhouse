@@ -1,0 +1,121 @@
+@startuml msa_er
+
+' Initial settings:
+
+title Smarthouse ER-diagram
+
+top to bottom direction
+
+
+' Actors & components:
+
+package "Users DB" as user_db{
+    entity User {
+        +id : uuid (PK)
+        +name: string
+    }
+
+    entity House {
+        +id : uuid (PK)
+        +name: string
+        +location: string
+        +user_id: uuid (FK)
+    }
+
+    entity DeviceInfo {
+        +id : uuid (PK)
+        +name: string
+        +type: string
+        +house_id: uuid (FK)
+    }
+
+    note top of DeviceInfo
+        Данные в Device и DeviceInfo связаны:
+        Device - первоисточник,
+        DeviceInfo - частичная копия,
+        сформированная на основе события от брокера.
+    end note
+
+    entity IntegrationInfo {
+        +id : uuid (PK)
+        +name: string
+        +user_id: uuid (FK)
+    }
+
+    note top of IntegrationInfo
+        Данные в Integration и IntegrationInfo связаны:
+        Integration - первоисточник,
+        IntegrationInfo - частичная копия,
+        сформированная на основе события от брокера.
+    end note
+
+    entity AutoRuleInfo {
+        +id : uuid (PK)
+        +name: string
+        +user_id: uuid (FK)
+    }
+
+    note top of AutoRuleInfo
+        Данные в AutoRule и AutoRuleInfo связаны:
+        AutoRule - первоисточник,
+        AutoRuleInfo - частичная копия,
+        сформированная на основе события от брокера.
+    end note
+}
+
+package "Devices DB" as dev_db {
+    entity Device {
+        +id : uuid (PK)
+        +name: string
+        +type: string
+        +location: string
+        +value: float
+        +last_update: timestamp
+    }
+}
+
+package "Telemetry DB" as tm_db {
+    entity Telemetry {
+        id: bigint (PK)
+        device_id: uuid
+        value: float
+        time: timestamp
+    }
+
+    note top of Telemetry
+        device_id совпадает совпадает с Device.id,
+        соответствие поддерживается в бизнес-логике.
+    endnote
+}
+
+package "AutoRules DB" as rules_db {
+    entity AutoRule {
+        +id : uuid (PK)
+        +name: string
+        +settings: json
+    }
+}
+
+package "Integrations DB" as integrs_db {
+    entity Integration {
+        +id : uuid (PK)
+        +name: string
+        +settings: json
+    }
+}
+
+' Relations:
+
+House "1..*" }|-- "1" User
+DeviceInfo "1..*" }|-- "1" House
+
+IntegrationInfo "1..*" }|-- "1" User
+
+AutoRuleInfo "1..*" }|-- "1" User
+
+DeviceInfo ..> Device
+AutoRuleInfo ..> AutoRule
+IntegrationInfo ..> Integration
+Telemetry ..> Device
+
+@enduml

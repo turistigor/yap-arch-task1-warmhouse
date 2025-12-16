@@ -145,7 +145,7 @@ C4 code (To-Be) devices: [puml](./schemas/to_be/code/code-devices.puml), [png](s
 
 # Задание 3. Разработка ER-диаграммы
 
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+ER diagram (To-Be): [puml](./schemas/to_be/er.puml), [png](schemas/to_be/er.png).
 
 # Задание 4. Создание и документирование API
 
