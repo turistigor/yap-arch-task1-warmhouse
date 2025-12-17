@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "github.com/smarthome/users";
+
+service UsersService {
+  // Users
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteResponse);
+  
+  // Houses
+  rpc CreateHouse(CreateHouseRequest) returns (HouseResponse);
+  rpc GetHouse(GetHouseRequest) returns (HouseResponse);
+  rpc UpdateHouse(UpdateHouseRequest) returns (HouseResponse);
+  rpc DeleteHouse(DeleteHouseRequest) returns (DeleteResponse);
+  
+  // Devices
+  rpc AddDeviceToHouse(AddDeviceRequest) returns (DeviceResponse);
+  rpc GetDevice(GetDeviceRequest) returns (DeviceResponse);
+  rpc RemoveDeviceFromHouse(RemoveDeviceRequest) returns (DeleteResponse);
+}
+
+// === REQUESTS ===
+message CreateUserRequest {
+  string name = 1;
+  string correlation_id = 2;
+}
+
+message GetUserRequest {
+  string user_id = 1;
+  string correlation_id = 2;
+}
+
+message UpdateUserRequest {
+  string user_id = 1;
+  string name = 2;
+  string correlation_id = 3;
+}
+
+message DeleteUserRequest {
+  string user_id = 1;
+  string correlation_id = 2;
+}
+
+message CreateHouseRequest {
+  string user_id = 1;
+  string name = 2;
+  string location = 3;
+  string correlation_id = 4;
+}
+
+message GetHouseRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string correlation_id = 3;
+}
+
+message UpdateHouseRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string name = 3;
+  string location = 4;
+  string correlation_id = 5;
+}
+
+message DeleteHouseRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string correlation_id = 3;
+}
+
+message AddDeviceRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string device_id = 3;
+  string name = 4;
+  string type = 5;
+  string correlation_id = 6;
+}
+
+message GetDeviceRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string device_id = 3;
+  string correlation_id = 4;
+}
+
+message RemoveDeviceRequest {
+  string user_id = 1;
+  string house_id = 2;
+  string device_id = 3;
+  string correlation_id = 4;
+}
+
+// === RESPONSES ===
+message UserResponse {
+  User user = 1;
+  string correlation_id = 2;
+}
+
+message HouseResponse {
+  House house = 1;
+  string correlation_id = 2;
+}
+
+message DeviceResponse {
+  Device device = 1;
+  string correlation_id = 2;
+}
+
+message DeleteResponse {
+  bool success = 1;
+  string correlation_id = 2;
+}
+
+// === ENTITIES ===
+message User {
+  string id = 1;
+  string name = 2;
+  repeated House houses = 3;
+}
+
+message House {
+  string id = 1;
+  string name = 2;
+  string location = 3;
+  string user_id = 4;
+  repeated Device devices = 5;
+}
+
+message Device {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string house_id = 4;
+}

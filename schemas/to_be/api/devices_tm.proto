@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package telemetry;
+
+
+// Сервис телеметрии для передачи данных с устройств
+service TelemetryService {
+  // Подписка на телеметрические данные устройств
+  // Серверный stream, который регулярно отправляет телеметрию
+  rpc StreamTelemetry(TelemetryRequest) returns (stream TelemetryMessage);
+}
+
+// Запрос на подписку телеметрии
+message TelemetryRequest {
+  repeated string device_ids = 1;  // Список UUID устройств для подписки
+  int32 interval_seconds = 2;      // Интервал отправки данных в секундах
+  string correlation_id = 3;       // Сквозной идентификатор для трассировки
+}
+
+// Телеметрическое сообщение
+message TelemetryMessage {
+  string device_id = 1;      // UUID устройства
+  float value = 2;           // Значение телеметрии
+  int64 timestamp = 3;       // Временная метка в формате Unix (миллисекунды)
+  string correlation_id = 4; // Сквозной идентификатор для трассировки
+}

@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package devices;
+
+// Сервис для управления устройствами
+service DeviceService {
+  // Получение детальной информации об устройстве
+  rpc GetDevice(GetDeviceRequest) returns (DeviceDetails) {}
+  
+  // Создание нового устройства
+  rpc CreateDevice(CreateDeviceRequest) returns (DeviceDetails) {}
+  
+  // Обновление информации об устройстве
+  rpc UpdateDevice(UpdateDeviceRequest) returns (DeviceDetails) {}
+  
+  // Удаление устройства
+  rpc DeleteDevice(DeleteDeviceRequest) returns (DeleteDeviceResponse) {}
+}
+
+// Запрос на получение устройства
+message GetDeviceRequest {
+  string id = 1;                // UUID устройства
+  string correlation_id = 2;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Запрос на создание устройства
+message CreateDeviceRequest {
+  string name = 1;              // Название устройства
+  string type = 2;              // Тип устройства (light, sensor, etc.)
+  string status = 3;            // Начальный статус устройства
+  string unit = 4;              // Единица измерения
+  string correlation_id = 5;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Запрос на обновление устройства
+message UpdateDeviceRequest {
+  string id = 1;                // UUID устройства для обновления
+  string name = 2;              // Название устройства
+  string type = 3;              // Тип устройства
+  string status = 4;            // Статус устройства
+  string unit = 5;              // Единица измерения
+  string correlation_id = 6;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Запрос на удаление устройства
+message DeleteDeviceRequest {
+  string id = 1;                // UUID устройства для удаления
+  string correlation_id = 2;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Ответ на удаление устройства
+message DeleteDeviceResponse {
+  bool success = 1;             // Успешно ли удалено
+  string message = 2;           // Сообщение (опционально)
+  string correlation_id = 3;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Детальная информация об устройстве
+message DeviceDetails {
+  string id = 1;                // UUID устройства
+  string name = 2;              // Название устройства
+  string type = 3;              // Тип устройства
+  string status = 4;            // Текущий статус устройства
+  float value = 5;              // Текущее значение устройства
+  string unit = 6;              // Единица измерения значения
+  string last_update = 7;       // Время последнего обновления
+  string correlation_id = 8;    // Идентификатор корреляции для отслеживания запроса
+}
+
+// Обрабатывает команды к устройствам
+service DeviceCommandService {
+
+  // Универсальный обработчик команд по идентификаторам устройства и команды
+  rpc ExecuteCommand(DeviceCommandRequest) returns (DeviceCommandResponse);
+  
+}
+
+message DeviceCommandRequest {
+  string command_id = 1;               // Уникальный ID команды
+  string device_id = 2;                // UUID устройства
+  map<string, string> parameters = 4;  // Параметры команды
+  string correlation_id = 5;           // Сквозной ID для трассировки
+}
+
+message DeviceCommandResponse {
+  string command_id = 1;          // ID команды
+  string device_id = 2;           // ID устройства
+  CommandStatus status = 3;       // Статус выполнения
+  string message = 4;             // Сообщение
+  int64 execution_time_ms = 5;    // Время выполнения в мс
+  string correlation_id = 6;      // Тот же correlation_id (для трассировки)
+}
+
+enum CommandStatus {
+  UNKNOWN = 0;
+  SUCCESS = 1;        // Успешно выполнена
+  FAILED = 2;         // Не удалось выполнить
+  REJECTED = 3;       // Отклонена
+  DEVICE_OFFLINE = 4; // Устройство оффлайн
+}

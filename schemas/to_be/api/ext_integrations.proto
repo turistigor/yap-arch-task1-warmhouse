@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package ext_integrations;
+
+// Сервис для управления внешними интеграциями
+service ExtIntegrationsService {
+// Ручки в стадии разработки
+}
+

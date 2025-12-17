@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package external_api.telemetry;
+
+
+service ExternalTelemetryService {
+  rpc StreamUserTelemetry(UserTelemetryRequest) returns (stream UserTelemetryMessage);
+}
+
+message UserTelemetryRequest {
+  string user_id = 1;                // UUID пользователя
+  repeated string device_ids = 2;    // Список UUID устройств для подписки
+  int32 interval_seconds = 3;        // Желаемый интервал
+}
+
+message UserTelemetryMessage {
+  string device_id = 1;    // UUID устройства
+  float value = 2;         // Значение телеметрии
+  int64 timestamp = 3;     // Unix timestamp в миллисекундах
+}

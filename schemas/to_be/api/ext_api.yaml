@@ -1,0 +1,812 @@
+openapi: 3.0.3
+info:
+  title: Smart Home API
+  version: 1.0.0
+  description: API для управления устройствами умного дома
+
+paths:
+  # === USERS ===
+  /api/v1/users:
+    get:
+      summary: Получение списка пользователей
+      operationId: getUsers
+      responses:
+        "200":
+          description: Список пользователей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersListResponse'
+    
+    post:
+      summary: Создание нового пользователя
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        "201":
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /api/v1/users/{user_id}:
+    get:
+      summary: Получение пользователя по ID
+      operationId: getUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Данные пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    
+    put:
+      summary: Обновление пользователя
+      operationId: updateUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        "200":
+          description: Пользователь обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    
+    delete:
+      summary: Удаление пользователя
+      operationId: deleteUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Пользователь удалён
+
+  /api/v1/users/{user_id}/houses:
+    get:
+      summary: Получение домов пользователя
+      operationId: getUserHouses
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Список домов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousesListResponse'
+    
+    post:
+      summary: Создание нового дома
+      operationId: createHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseCreate'
+      responses:
+        "201":
+          description: Дом создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseResponse'
+
+  /api/v1/users/{user_id}/houses/{house_id}:
+    get:
+      summary: Получение дома по ID
+      operationId: getHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Данные дома
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseResponse'
+    
+    put:
+      summary: Обновление дома
+      operationId: updateHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseUpdate'
+      responses:
+        "200":
+          description: Дом обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseResponse'
+    
+    delete:
+      summary: Удаление дома
+      operationId: deleteHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Дом удалён
+
+  /api/v1/users/{user_id}/houses/{house_id}/devices:
+    get:
+      summary: Получение устройств в доме
+      operationId: getHouseDevices
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Список устройств
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevicesListResponse'
+    
+    post:
+      summary: Добавление устройства в дом
+      operationId: addDeviceToHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAdd'
+      responses:
+        "201":
+          description: Устройство добавлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+
+  /api/v1/users/{user_id}/houses/{house_id}/devices/{device_id}:
+    get:
+      summary: Получение устройства
+      operationId: getDevice
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Данные устройства
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+    
+    delete:
+      summary: Удаление устройства из дома
+      operationId: removeDeviceFromHouse
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: house_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Устройство удалено
+
+  # === DEVICES ===
+  /api/v1/devices:
+    get:
+      summary: Получение детальной информации об устройстве
+      description: |
+        Возвращает детальную информацию об устройстве, включая текущий статус и значение.
+      operationId: getDeviceDetails
+      parameters:
+        - name: id
+          in: query
+          description: UUID устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "789e0123-e89b-45d3-a456-426614174999"
+      responses:
+        "200":
+          description: Успешный ответ с детальной информацией об устройстве
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceDetails"
+        "400":
+          description: Неверный параметр id
+        "404":
+          description: Устройство не найдено
+        "500":
+          description: Внутренняя ошибка сервера
+
+    post:
+      summary: Создание нового устройства
+      description: |
+        Создает новое устройство в системе.
+      operationId: createDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceCreate"
+      responses:
+        "201":
+          description: Устройство успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceDetails"
+        "400":
+          description: Неверные данные запроса
+        "500":
+          description: Внутренняя ошибка сервера
+
+    put:
+      summary: Обновление информации об устройстве
+      description: |
+        Обновляет информацию об устройстве.
+      operationId: updateDevice
+      parameters:
+        - name: id
+          in: query
+          description: UUID устройства для обновления
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "789e0123-e89b-45d3-a456-426614174999"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceUpdate"
+      responses:
+        "200":
+          description: Устройство успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceDetails"
+        "400":
+          description: Неверные данные запроса
+        "404":
+          description: Устройство не найдено
+        "500":
+          description: Внутренняя ошибка сервера
+
+    delete:
+      summary: Удаление устройства
+      description: |
+        Удаляет устройство из системы по его идентификатору.
+      operationId: deleteDevice
+      parameters:
+        - name: id
+          in: query
+          description: UUID устройства для удаления
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "789e0123-e89b-45d3-a456-426614174999"
+      responses:
+        "204":
+          description: Устройство успешно удалено
+        "404":
+          description: Устройство не найдено
+        "500":
+          description: Внутренняя ошибка сервера
+
+  /api/v1/devices/{device_id}/commands:
+    post:
+      summary: Отправка команды устройству (синхронная)
+      description: |
+        Отправляет команду на выполнение устройству и ждёт результат.
+        Возвращает результат выполнения.
+      operationId: sendDeviceCommand
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "789e0123-e89b-45d3-a456-426614174999"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCommand'
+      responses:
+        "200":
+          description: Команда успешно выполнена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+        "400":
+          description: Неверные параметры команды
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Устройство не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "422":
+          description: Команда отклонена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    # === USERS REQUESTS ===
+    UserCreate:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    HouseCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        location:
+          type: string
+      required:
+        - name
+        - location
+
+    HouseUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        location:
+          type: string
+      required:
+        - name
+        - location
+
+    DeviceAdd:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+      required:
+        - device_id
+        - name
+        - type
+
+    # === USERS RESPONSES ===
+    UsersListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    UserResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+
+    HousesListResponse:
+      type: object
+      properties:
+        houses:
+          type: array
+          items:
+            $ref: '#/components/schemas/House'
+
+    HouseResponse:
+      type: object
+      properties:
+        house:
+          $ref: '#/components/schemas/House'
+
+    DevicesListResponse:
+      type: object
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device'
+
+    DeviceResponse:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+
+    # === USERS ENTITIES ===
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        houses:
+          type: array
+          items:
+            $ref: '#/components/schemas/House'
+      required:
+        - id
+        - name
+
+    House:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        location:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device'
+      required:
+        - id
+        - name
+        - location
+        - user_id
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+        house_id:
+          type: string
+          format: uuid
+      required:
+        - id
+        - name
+        - type
+        - house_id
+
+    # === DEVICES ===
+    DeviceDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID устройства
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        name:
+          type: string
+          description: Название устройства
+          example: "Умная лампа в гостиной"
+        type:
+          type: string
+          description: Тип устройства
+          example: "light"
+        status:
+          type: string
+          description: Текущий статус устройства
+          example: "online"
+        value:
+          type: number
+          format: float
+          description: Текущее значение устройства
+          example: 22.5
+        unit:
+          type: string
+          description: Единица измерения значения
+          example: "°C"
+        last_update:
+          type: string
+          format: date-time
+          description: Время последнего обновления данных устройства
+          example: "2024-01-15T10:30:00Z"
+      required:
+        - id
+        - name
+        - type
+        - status
+        - value
+        - unit
+        - last_update
+
+    DeviceCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Название устройства
+          example: "Умная лампа в гостиной"
+        type:
+          type: string
+          description: Тип устройства
+          example: "light"
+        status:
+          type: string
+          description: Начальный статус устройства
+          example: "offline"
+        unit:
+          type: string
+          description: Единица измерения значения
+          example: "°C"
+      required:
+        - name
+        - type
+        - status
+        - unit
+
+    DeviceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Название устройства
+          example: "Умная лампа в гостиной"
+        type:
+          type: string
+          description: Тип устройства
+          example: "light"
+        status:
+          type: string
+          description: Статус устройства
+          example: "online"
+        unit:
+          type: string
+          description: Единица измерения значения
+          example: "°C"
+      required:
+        - name
+        - type
+        - status
+        - unit
+
+    DeviceCommand:
+      type: object
+      properties:
+        command_id:
+          type: string
+          description: Уникальный идентификатор команды
+          example: "cmd-5234613098"
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+          description: Параметры команды
+      required:
+        - command_id
+
+    CommandResponse:
+      type: object
+      properties:
+        command_id:
+          type: string
+          description: Уникальный идентификатор команды
+          example: "cmd-1234567890"
+        device_id:
+          type: string
+          format: uuid
+          description: ID устройства
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        status:
+          type: string
+          description: Результат выполнения
+          enum:
+            - success
+            - failed
+            - rejected
+            - device_offline
+          example: "success"
+        message:
+          type: string
+          description: Детальное сообщение
+          example: "Команда выполнена успешно"
+        execution_time_ms:
+          type: integer
+          description: Время выполнения в миллисекундах
+          example: 250
+        timestamp:
+          type: string
+          format: date-time
+          description: Время выполнения команды
+          example: "2024-01-15T10:30:05Z"
+      required:
+        - command_id
+        - device_id
+        - status
+        - timestamp
+
+
+    # === COMMON ===
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Тип ошибки
+          example: "validation_error"
+        message:
+          type: string
+          description: Сообщение об ошибке
+          example: "Неверные параметры команды"
+        timestamp:
+          type: string
+          format: date-time
+          description: Время ошибки
+          example: "2024-01-15T10:30:00Z"
+      required:
+        - error
+        - message
+        - timestamp

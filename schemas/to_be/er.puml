@@ -68,8 +68,9 @@ package "Devices DB" as dev_db {
         +id : uuid (PK)
         +name: string
         +type: string
-        +location: string
+        +status: string
         +value: float
+        +unit: string
         +last_update: timestamp
     }
 }
