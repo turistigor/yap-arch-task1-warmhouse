@@ -5,6 +5,7 @@
 #include "../utils/randoms.h"
 
 static constexpr std::string UNKNOWN_LOCATION {"unknown"};
+static constexpr std::string UNKNOWN_SENSOR_ID {"0"};
 
 
 DrogonHandlerPtr<> temp_handler_location = [](
@@ -18,6 +19,9 @@ DrogonHandlerPtr<> temp_handler_location = [](
     auto location_param = req->getOptionalParameter<std::string>("location");
     std::string location = (location_param) ? *location_param : UNKNOWN_LOCATION;
     std::string sensor_id = get_sensor_id(location);
+    if (sensor_id == UNKNOWN_SENSOR_ID){
+        location = UNKNOWN_LOCATION;
+    }
     
     auto json = create_temp_json(temperature, location, sensor_id);
     auto resp = drogon::HttpResponse::newHttpJsonResponse(json);
@@ -83,6 +87,6 @@ std::string get_sensor_id(const std::string& location) {
     } if (location ==  "Kitchen") {
         return  "3";
     } else {
-		return "0";
+		return UNKNOWN_SENSOR_ID;
     }
 }

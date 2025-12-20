@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "d69ac213-6663-4073-b91e-72948532afa1",
+		"name": "Smart Home Telemetry API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5873967"
+	},
+	"item": [
+		{
+			"name": "Get Tm Stat",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/api/v1/stat/get_tm?sensor_id=2&start_time=2025-12-21T20:00:00%2B03:00&end_time=2025-12-21T20:50:00%2B03:00",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"v1",
+						"stat",
+						"get_tm"
+					],
+					"query": [
+						{
+							"key": "sensor_id",
+							"value": "2"
+						},
+						{
+							"key": "start_time",
+							"value": "2025-12-21T20:00:00%2B03:00"
+						},
+						{
+							"key": "end_time",
+							"value": "2025-12-21T20:50:00%2B03:00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

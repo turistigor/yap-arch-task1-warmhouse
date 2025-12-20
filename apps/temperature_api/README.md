@@ -1,4 +1,4 @@
-# Smart Home Sensor Management API
+# Smart Home Temperature API
 
 ## Getting Started
 
