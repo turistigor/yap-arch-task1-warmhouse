@@ -1,0 +1,36 @@
+@startuml msa_components_users
+
+' Initial settings:
+
+title Users component diagram
+
+top to bottom direction
+
+!include ../../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Container_Boundary(users, "Users management") {
+    Component(api, "Users API", "GRPC")
+    Component(manager, "Users manager", "Users operations")
+    Component(msg_broker_api, "Messages broker API", "Send/recv messages")
+}
+
+ContainerDb(users_db, "Users DB", "Users data")
+Container(ext_api, "External API", "External API")
+ContainerQueue(msg_broker, "Messages broker", "Сontainers communication broker")
+
+
+' Relations:
+
+Rel(ext_api, api, "Users operations")
+Rel(api, manager, "Ops handlers")
+Rel(manager, users_db, "Users ops")
+
+Rel(msg_broker_api, manager , "Ext event")
+Rel(manager, msg_broker_api, "Users public event")
+Rel(msg_broker, msg_broker_api, "Ext event")
+Rel(msg_broker_api, msg_broker, "Users public event")
+
+@enduml

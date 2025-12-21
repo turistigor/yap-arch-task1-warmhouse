@@ -1,0 +1,117 @@
+@startuml msa_code_devices
+
+' Actors & components:
+
+title Devices code diagram
+
+top to bottom direction
+
+!includeurl ../../lib/C4_Code.puml
+
+
+' Actors & components:
+
+class DevicesOpsAPI {
+    +GrpcResp create(GrpcReq new_dev_data)
+    +GrpcResp read(GrpcReq dev_id)
+    +GrpcResp update(GrpcReq dev_data)
+    +GrpcResp delete(GrpcReq dev_id)
+
+    -DevicesOpsManager mngr
+}
+
+class DevicesCmdsAPI {
+    +GrpcResp execute_cmd(GrpcReq dev_cmd)
+
+    -DevicesCmdExecutor exec
+    TmManager tm_manager
+}
+
+class DevicesTmAPI {
+    +GrpcStreamMessage send(List tm_args)
+}
+
+class DevicesDbConnector {
+    + QueryRes execute_query(List query_args)
+}
+
+!define Map<UUID, IDevice> DevicesMap
+class DevicesMap
+
+class DevicesOpsManager {
+    +IDevice create(List new_dev_data)
+    +IDevice read(UUID dev_id)
+    +IDevice update(List dev_data)
+    +void delete(UUID dev_id)
+
+    -DevicesMap devices
+    -DevicesDbConnector dev_db
+    -BrokerMsgSender msg_sender
+}
+
+class DevicesCmdExecutor {
+    +void execute_cmd(List cmd_args)
+    -BrokerMsgSender msg_sender
+}
+
+class BrokerMsgReceiver {
+    +handle_msg(Message msg)
+
+    -DevicesMap devices
+    -DevicesCmdExecutor cmd_exec
+}
+
+class BrokerMsgSender {
+    +send_msg(List msg_args)
+}
+
+class TmDbConnector {
+    + QueryRes execute_query(List query_args)
+}
+
+class TmManager {
+    +void run()
+
+    -BrokerMsgSender msg_sender
+    -DevicesMap devices
+    -TmDbConnector tm_db
+}
+
+interface IDevice {
+    +void execute_cmd(List cmd_args)
+}
+
+class TempDevice implements IDevice{
+    +void execute_cmd(List cmd_args)
+}
+
+class LightDevice implements IDevice{
+    +void execute_cmd(List cmd_args)
+}
+
+class GateDevice implements IDevice{
+    +void execute_cmd(List cmd_args)
+}
+
+
+' Relations:
+
+DevicesOpsAPI "1" --> "1" DevicesOpsManager
+DevicesCmdsAPI "1" --> "1" DevicesCmdExecutor
+BrokerMsgReceiver "1" --> "1" DevicesOpsManager
+BrokerMsgReceiver "1" --> "1" DevicesCmdExecutor
+DevicesTmAPI "1" --> "1" TmManager
+
+DevicesOpsManager "1" --> "1" DevicesMap
+DevicesCmdExecutor "1" --> "1" DevicesMap
+TmManager "1" --> "1" DevicesMap
+DevicesMap "1" --> "0..n" IDevice
+
+DevicesOpsManager "1" *-- "1" DevicesDbConnector
+TmManager "1" *-- "1" TmDbConnector
+
+DevicesOpsManager "1" --> "1" BrokerMsgSender
+DevicesCmdExecutor "1" --> "1" BrokerMsgSender
+TmManager "1" --> "1" BrokerMsgSender
+
+@enduml

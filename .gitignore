@@ -1,1 +1,4 @@
-.DS_Store
+.vscode
+apps/temperature_api/build
+*__pycache__*
+apps/telemetry_service/.venv

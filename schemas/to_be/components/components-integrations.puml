@@ -1,0 +1,36 @@
+@startuml msa_components_integrations
+
+' Initial settings:
+
+title Integrations component diagram
+
+top to bottom direction
+
+!include ../../lib/C4_Component.puml
+
+
+' Actors & components:
+
+Container_Boundary(integrations, "Integrations management") {
+    Component(api, "Integrations API", "GRPC")
+    Component(manager, "Integrations manager", "Integrations operations")
+    Component(msg_broker_api, "Messages broker API", "Send/recv messages")
+}
+
+ContainerDb(integrations_db, "Integrations DB", "Integrations data")
+Container(ext_api, "External API", "External API")
+ContainerQueue(msg_broker, "Messages broker", "Сontainers communication broker")
+
+
+' Relations:
+
+Rel(ext_api, api, "Integrations operations")
+Rel(api, manager, "Ops handlers")
+Rel(manager, integrations_db, "Integrations ops")
+
+Rel(msg_broker_api, manager , "Ext event")
+Rel(manager, msg_broker_api, "Integrations public event")
+Rel(msg_broker, msg_broker_api, "Ext event")
+Rel(msg_broker_api, msg_broker, "Integrations public event")
+
+@enduml

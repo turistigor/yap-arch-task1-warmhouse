@@ -1,0 +1,1188 @@
+asyncapi: 3.0.0
+info:
+  title: Smart Home Devices Events
+  version: 1.0.0
+  description: Асинхронные события от микросервиса Devices
+
+channels:
+  # === USERS ===
+  # События пользователей
+  user.created:
+    address: users.events.created
+    description: Событие создания пользователя
+    messages:
+      userCreated:
+        $ref: '#/components/messages/UserCreated'
+
+  user.updated:
+    address: users.events.updated
+    description: Событие обновления пользователя
+    messages:
+      userUpdated:
+        $ref: '#/components/messages/UserUpdated'
+
+  user.deleted:
+    address: users.events.deleted
+    description: Событие удаления пользователя
+    messages:
+      userDeleted:
+        $ref: '#/components/messages/UserDeleted'
+
+  # События домов
+  house.created:
+    address: houses.events.created
+    description: Событие создания дома
+    messages:
+      houseCreated:
+        $ref: '#/components/messages/HouseCreated'
+
+  house.updated:
+    address: houses.events.updated
+    description: Событие обновления дома
+    messages:
+      houseUpdated:
+        $ref: '#/components/messages/HouseUpdated'
+
+  house.deleted:
+    address: houses.events.deleted
+    description: Событие удаления дома
+    messages:
+      houseDeleted:
+        $ref: '#/components/messages/HouseDeleted'
+
+  # События устройств в домах
+  house.device.added:
+    address: houses.events.device.added
+    description: Событие добавления устройства в дом
+    messages:
+      deviceAdded:
+        $ref: '#/components/messages/DeviceAdded'
+
+  house.device.removed:
+    address: houses.events.device.removed
+    description: Событие удаления устройства из дома
+    messages:
+      deviceRemoved:
+        $ref: '#/components/messages/DeviceRemoved'
+
+  # === DEVICES ===
+  device.created:
+    address: devices.events.created
+    description: Канал для событий о создании новых устройств
+    messages:
+      deviceCreated:
+        $ref: '#/components/messages/DeviceCreated'
+
+  device.updated:
+    address: devices.events.updated
+    description: Канал для событий об обновлении устройств
+    messages:
+      deviceUpdated:
+        $ref: '#/components/messages/DeviceUpdated'
+
+  device.deleted:
+    address: devices.events.deleted
+    description: Канал для событий об удалении устройств
+    messages:
+      deviceDeleted:
+        $ref: '#/components/messages/DeviceDeleted'
+
+  device.telemetry.event:
+    address: devices.events.telemetry
+    description: Канал для событий, обнаруженных на основе телеметрии
+    messages:
+      deviceTelemetryEvent:
+        $ref: '#/components/messages/DeviceTelemetryEvent'
+
+  device.command.executed:
+    address: commands.executed
+    description: Канал для успешно выполненных команд к устройствам
+    messages:
+      commandExecuted:
+        $ref: '#/components/messages/CommandExecuted'
+
+operations:
+  # === USERS ===
+  publishUserCreated:
+    action: send
+    channel:
+      $ref: '#/channels/user.created'
+    description: Публикация события создания пользователя
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishUserUpdated:
+    action: send
+    channel:
+      $ref: '#/channels/user.updated'
+    description: Публикация события обновления пользователя
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishUserDeleted:
+    action: send
+    channel:
+      $ref: '#/channels/user.deleted'
+    description: Публикация события удаления пользователя
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishHouseCreated:
+    action: send
+    channel:
+      $ref: '#/channels/house.created'
+    description: Публикация события создания дома
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishHouseUpdated:
+    action: send
+    channel:
+      $ref: '#/channels/house.updated'
+    description: Публикация события обновления дома
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishHouseDeleted:
+    action: send
+    channel:
+      $ref: '#/channels/house.deleted'
+    description: Публикация события удаления дома
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishDeviceAdded:
+    action: send
+    channel:
+      $ref: '#/channels/house.device.added'
+    description: Публикация события добавления устройства
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  publishDeviceRemoved:
+    action: send
+    channel:
+      $ref: '#/channels/house.device.removed'
+    description: Публикация события удаления устройства
+    tags:
+      - name: users
+        description: Сервис пользователей
+
+  devicesSubscribeDeviceAdded:
+    action: receive
+    channel:
+      $ref: '#/channels/house.device.added'
+    description: Сервис Devices подписывается на добавление устройств
+    tags:
+      - name: devices
+        description: Сервис устройств
+
+  devicesSubscribeDeviceRemoved:
+    action: receive
+    channel:
+      $ref: '#/channels/house.device.removed'
+    description: Сервис Devices подписывается на удаление устройств
+    tags:
+      - name: devices
+        description: Сервис устройств
+
+  autoRulesSubscribeUserCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/user.created'
+    description: AutoRules подписывается на создание пользователей
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autoRulesSubscribeHouseCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/house.created'
+    description: AutoRules подписывается на создание домов
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autoRulesSubscribeDeviceAdded:
+    action: receive
+    channel:
+      $ref: '#/channels/house.device.added'
+    description: AutoRules подписывается на добавление устройств
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  integrationsSubscribeUserCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/user.created'
+    description: Integrations подписывается на создание пользователей
+    tags:
+      - name: extintegrations
+        description: Сервис внешних интеграций
+
+  integrationsSubscribeHouseCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/house.created'
+    description: Integrations подписывается на создание домов
+    tags:
+      - name: extintegrations
+        description: Сервис внешних интеграций
+
+  integrationsSubscribeDeviceAdded:
+    action: receive
+    channel:
+      $ref: '#/channels/house.device.added'
+    description: Integrations подписывается на добавление устройств
+    tags:
+      - name: extintegrations
+        description: Сервис внешних интеграций
+
+  # === DEVICES ===
+  publishDeviceCreated:
+    action: send
+    channel:
+      $ref: '#/channels/device.created'
+    description: Сервис Devices публикует события о создании устройств
+    tags:
+      - name: devices
+        description: Микросервис управления устройствами
+
+  publishDeviceUpdated:
+    action: send
+    channel:
+      $ref: '#/channels/device.updated'
+    description: Сервис Devices публикует события об обновлении устройств
+    tags:
+      - name: devices
+        description: Микросервис управления устройствами
+
+  publishDeviceDeleted:
+    action: send
+    channel:
+      $ref: '#/channels/device.deleted'
+    description: Сервис Devices публикует события об удалении устройств
+    tags:
+      - name: devices
+        description: Микросервис управления устройствами
+
+  publishDeviceTelemetryEvent:
+    action: send
+    channel:
+      $ref: '#/channels/device.telemetry.event'
+    description: Сервис Devices публикует события, обнаруженные на основе телеметрии
+    tags:
+      - name: devices
+        description: Микросервис управления устройствами
+
+  publishCommandExecuted:
+    action: send
+    channel:
+      $ref: '#/channels/device.command.executed'
+    description: Публикация успешно выполненной команды
+    tags:
+      - name: devices
+        description: Микросервис управления устройствами
+
+  usersSubscribeDeviceCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.created'
+    description: Сервис Users подписывается на события создания устройств
+    tags:
+      - name: users
+        description: Микросервис управления пользователями
+
+  usersSubscribeDeviceUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.updated'
+    description: Сервис Users подписывается на события обновления устройств
+    tags:
+      - name: users
+        description: Микросервис управления пользователями
+
+  usersSubscribeDeviceDeleted:
+    action: receive
+    channel:
+      $ref: '#/channels/device.deleted'
+    description: Сервис Users подписывается на события удаления устройств
+    tags:
+      - name: users
+        description: Микросервис управления пользователями
+
+  usersSubscribeDeviceTelemetryEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/device.telemetry.event'
+    description: Сервис Users подписывается на телеметрические события для уведомления пользователей
+    tags:
+      - name: users
+        description: Микросервис управления пользователями
+
+  autoRulesSubscribeDeviceCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.created'
+    description: Сервис AutoRules подписывается на события создания устройств
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autoRulesSubscribeDeviceUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.updated'
+    description: Сервис AutoRules подписывается на события обновления устройств
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autoRulesSubscribeDeviceDeleted:
+    action: receive
+    channel:
+      $ref: '#/channels/device.deleted'
+    description: Сервис AutoRules подписывается на события удаления устройств
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autoRulesSubscribeDeviceTelemetryEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/device.telemetry.event'
+    description: Сервис AutoRules подписывается на телеметрические события для активации правил
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  autorulesSubscribeCommandExecuted:
+    action: receive
+    channel:
+      $ref: '#/channels/device.command.executed'
+    description: Сервис AutoRules подписывается на успешные команды для анализа
+    tags:
+      - name: autorules
+        description: Микросервис правил автоматизации
+
+  extIntegrationsSubscribeDeviceCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.created'
+    description: Сервис ExtIntegrations подписывается на события создания устройств
+    tags:
+      - name: extintegrations
+        description: Микросервис внешних интеграций
+
+  extIntegrationsSubscribeDeviceUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/device.updated'
+    description: Сервис ExtIntegrations подписывается на события обновления устройств
+    tags:
+      - name: extintegrations
+        description: Микросервис внешних интеграций
+
+  extIntegrationsSubscribeDeviceDeleted:
+    action: receive
+    channel:
+      $ref: '#/channels/device.deleted'
+    description: Сервис ExtIntegrations подписывается на события удаления устройств
+    tags:
+      - name: extintegrations
+        description: Микросервис внешних интеграций
+
+  extIntegrationsSubscribeDeviceTelemetryEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/device.telemetry.event'
+    description: Сервис ExtIntegrations подписывается на телеметрические события для интеграций
+    tags:
+      - name: extintegrations
+        description: Микросервис внешних интеграций
+
+  extIntegrationsSubscribeCommandExecuted:
+    action: receive
+    channel:
+      $ref: '#/channels/device.command.executed'
+    description: Сервис Integrations подписывается на успешные команды для синхронизации
+    tags:
+      - name: extintegrations
+        description: Микросервис внешних интеграций
+
+components:
+  messages:
+    # === USERS ===
+    UserCreated:
+      name: userCreated
+      title: User Created Event
+      summary: Событие создания пользователя
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserCreatedPayload'
+
+    UserUpdated:
+      name: userUpdated
+      title: User Updated Event
+      summary: Событие обновления пользователя
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserUpdatedPayload'
+
+    UserDeleted:
+      name: userDeleted
+      title: User Deleted Event
+      summary: Событие удаления пользователя
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserDeletedPayload'
+
+    HouseCreated:
+      name: houseCreated
+      title: House Created Event
+      summary: Событие создания дома
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/HouseCreatedPayload'
+
+    HouseUpdated:
+      name: houseUpdated
+      title: House Updated Event
+      summary: Событие обновления дома
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/HouseUpdatedPayload'
+
+    HouseDeleted:
+      name: houseDeleted
+      title: House Deleted Event
+      summary: Событие удаления дома
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/HouseDeletedPayload'
+
+    DeviceAdded:
+      name: deviceAdded
+      title: Device Added Event
+      summary: Событие добавления устройства в дом
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceAddedPayload'
+
+    DeviceRemoved:
+      name: deviceRemoved
+      title: Device Removed Event
+      summary: Событие удаления устройства из дома
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceRemovedPayload'
+
+    # === DEVICES ===
+    DeviceCreated:
+      name: deviceCreated
+      title: Device Created Event
+      summary: Событие создания нового устройства
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceCreatedPayload'
+
+    DeviceUpdated:
+      name: deviceUpdated
+      title: Device Updated Event
+      summary: Событие обновления устройства
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceUpdatedPayload'
+
+    DeviceDeleted:
+      name: deviceDeleted
+      title: Device Deleted Event
+      summary: Событие удаления устройства
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceDeletedPayload'
+
+    DeviceTelemetryEvent:
+      name: deviceTelemetryEvent
+      title: Device Telemetry Event
+      summary: Событие, обнаруженное на основе телеметрии устройства
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DeviceTelemetryEventPayload'
+
+    CommandExecuted:
+      name: commandExecuted
+      title: Command Executed Event
+      summary: Событие успешно выполненной команды к устройству
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CommandExecutedPayload'
+
+  schemas:
+    # === USERS ===
+    UserCreatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: user.created
+        user:
+          $ref: '#/components/schemas/UserData'
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - user
+        - metadata
+
+    UserUpdatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: user.updated
+        user:
+          $ref: '#/components/schemas/UserData'
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - user
+        - metadata
+
+    UserDeletedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: user.deleted
+        user_id:
+          type: string
+          format: uuid
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - user_id
+        - metadata
+
+    HouseCreatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: house.created
+        house:
+          $ref: '#/components/schemas/HouseData'
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - house
+        - metadata
+
+    HouseUpdatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: house.updated
+        house:
+          $ref: '#/components/schemas/HouseData'
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - house
+        - metadata
+
+    HouseDeletedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: house.deleted
+        house_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - house_id
+        - user_id
+        - metadata
+
+    DeviceAddedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: house.device.added
+        device:
+          $ref: '#/components/schemas/DeviceData'
+        house_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - device
+        - house_id
+        - user_id
+        - metadata
+
+    DeviceRemovedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+          const: house.device.removed
+        device_id:
+          type: string
+          format: uuid
+        house_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+      required:
+        - event_id
+        - event_type
+        - device_id
+        - house_id
+        - user_id
+        - metadata
+
+    UserData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+        - id
+        - name
+
+    HouseData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        location:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+      required:
+        - id
+        - name
+        - location
+        - user_id
+
+    DeviceData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+        house_id:
+          type: string
+          format: uuid
+      required:
+        - id
+        - name
+        - type
+        - house_id
+
+    # === DEVICES ===
+    DeviceCreatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        event_type:
+          type: string
+          const: device.created
+          description: Тип события
+        event_time:
+          type: string
+          format: date-time
+          description: Время создания события
+          example: "2024-01-15T10:30:00Z"
+        device:
+          $ref: '#/components/schemas/DeviceEventData'
+        metadata:
+          type: object
+          properties:
+            source_service:
+              type: string
+              const: devices
+              description: Сервис-источник события
+            correlation_id:
+              type: string
+              description: Идентификатор корреляции для отслеживания запроса
+              example: "corr-12345"
+          required:
+            - source_service
+        association_info:
+          type: object
+          properties:
+            user_id:
+              type: string
+              format: uuid
+              description: UUID пользователя, которому принадлежит устройство
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            house_id:
+              type: string
+              format: uuid
+              description: UUID дома, в котором находится устройство
+              example: "123e4567-e89b-12d3-a456-426614174000"
+          required:
+            - user_id
+            - house_id
+      required:
+        - event_id
+        - event_type
+        - event_time
+        - device
+        - metadata
+        - association_info
+
+    DeviceUpdatedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события
+          example: "b2c3d4e5-f6a7-8901-bcde-f23456789012"
+        event_type:
+          type: string
+          const: device.updated
+          description: Тип события
+        event_time:
+          type: string
+          format: date-time
+          description: Время создания события
+          example: "2024-01-15T11:45:00Z"
+        device:
+          $ref: '#/components/schemas/DeviceEventData'
+        previous_state:
+          $ref: '#/components/schemas/DeviceEventData'
+          description: Состояние устройства до обновления
+        metadata:
+          type: object
+          properties:
+            source_service:
+              type: string
+              const: devices
+              description: Сервис-источник события
+            correlation_id:
+              type: string
+              description: Идентификатор корреляции для отслеживания запроса
+              example: "corr-12346"
+          required:
+            - source_service
+      required:
+        - event_id
+        - event_type
+        - event_time
+        - device
+        - previous_state
+        - metadata
+
+    DeviceDeletedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события
+          example: "c3d4e5f6-a7b8-9012-cdef-345678901234"
+        event_type:
+          type: string
+          const: device.deleted
+          description: Тип события
+        event_time:
+          type: string
+          format: date-time
+          description: Время создания события
+          example: "2024-01-15T12:15:00Z"
+        device_id:
+          type: string
+          format: uuid
+          description: UUID удаленного устройства
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        metadata:
+          type: object
+          properties:
+            source_service:
+              type: string
+              const: devices
+              description: Сервис-источник события
+            correlation_id:
+              type: string
+              description: Идентификатор корреляции для отслеживания запроса
+              example: "corr-12347"
+          required:
+            - source_service
+      required:
+        - event_id
+        - event_type
+        - event_time
+        - device_id
+        - metadata
+
+    DeviceEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID устройства
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        name:
+          type: string
+          description: Название устройства
+          example: "Умная лампа в гостиной"
+        type:
+          type: string
+          description: Тип устройства
+          example: "light"
+        status:
+          type: string
+          description: Статус устройства
+          example: "online"
+        unit:
+          type: string
+          description: Единица измерения
+          example: "°C"
+      required:
+        - id
+        - name
+        - type
+        - status
+        - unit
+
+    DeviceTelemetryEventPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события
+          example: "d4e5f6a7-b8c9-0123-def4-567890123456"
+        event_type:
+          type: string
+          description: Тип телеметрического события
+          enum:
+            - door_unexpected_open
+            - temperature_high
+            - temperature_low
+            - humidity_high
+            - humidity_low
+            - water_leak_detected
+            - smoke_detected
+            - motion_detected
+            - device_offline
+            - device_error
+            - battery_low
+            - window_open
+            - gas_leak_detected
+            - power_consumption_high
+          example: "door_unexpected_open"
+        event_time:
+          type: string
+          format: date-time
+          description: Время обнаружения события
+          example: "2024-01-15T22:30:00Z"
+        device_id:
+          type: string
+          format: uuid
+          description: UUID устройства, с которым связано событие
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        device_type:
+          type: string
+          description: Тип устройства для контекста
+          example: "door_lock"
+        severity:
+          type: string
+          description: Уровень важности события
+          enum:
+            - info
+            - warning
+            - critical
+          example: "critical"
+        description:
+          type: string
+          description: Человекочитаемое описание события
+          example: "Открытие входной двери в нерабочее время"
+        telemetry_value:
+          type: number
+          format: float
+          description: Значение телеметрии, вызвавшее событие
+          example: 1.0
+        telemetry_unit:
+          type: string
+          description: Единица измерения телеметрии
+          example: "state"
+        threshold:
+          type: number
+          format: float
+          description: Пороговое значение, если событие связано с порогом
+          example: 0.5
+        metadata:
+          type: object
+          properties:
+            source_service:
+              type: string
+              const: devices
+              description: Сервис-источник события
+            correlation_id:
+              type: string
+              description: Идентификатор корреляции из телеметрии
+              example: "corr-78901"
+            rule_id:
+              type: string
+              description: Идентификатор правила, сгенерировавшего событие
+              example: "rule-123"
+            detection_time:
+              type: string
+              format: date-time
+              description: Время получения телеметрии
+              example: "2024-01-15T22:29:55Z"
+          required:
+            - source_service
+        context:
+          type: object
+          properties:
+            user_id:
+              type: string
+              format: uuid
+              description: UUID пользователя, связанного с устройством
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            house_id:
+              type: string
+              format: uuid
+              description: UUID дома, где находится устройство
+              example: "123e4567-e89b-12d3-a456-426614174000"
+            location:
+              type: string
+              description: Местоположение устройства в доме
+              example: "Входная дверь"
+            expected_time_range:
+              type: array
+              items:
+                type: string
+              description: Ожидаемый временной диапазон для события
+              example: ["09:00", "18:00"]
+          required:
+            - user_id
+            - house_id
+      required:
+        - event_id
+        - event_type
+        - event_time
+        - device_id
+        - severity
+        - description
+        - metadata
+        - context
+
+    CommandExecutedPayload:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Уникальный ID события
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        event_type:
+          type: string
+          const: device.command.executed
+          description: Тип события
+        event_time:
+          type: string
+          format: date-time
+          description: Время создания события
+          example: "2024-01-15T10:30:00Z"
+        command:
+          $ref: '#/components/schemas/CommandData'
+        result:
+          $ref: '#/components/schemas/CommandResult'
+        metadata:
+          type: object
+          properties:
+            source_service:
+              type: string
+              const: external-api
+              description: Сервис-источник
+            correlation_id:
+              type: string
+              description: Сквозной ID для трассировки
+              example: "corr-12345"
+          required:
+            - source_service
+            - correlation_id
+      required:
+        - event_id
+        - event_type
+        - event_time
+        - command
+        - result
+        - metadata
+
+    CommandData:
+      type: object
+      properties:
+        command_id:
+          type: string
+          description: Уникальный ID команды
+          example: "cmd-1234567890"
+        device_id:
+          type: string
+          format: uuid
+          description: UUID устройства
+          example: "789e0123-e89b-45d3-a456-426614174999"
+        command_type:
+          type: string
+          description: Тип команды
+          enum:
+            - turn_on
+            - turn_off
+            - set_value
+            - set_color
+            - set_brightness
+            - lock
+            - unlock
+            - open
+            - close
+          example: "turn_on"
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+          description: Параметры команды
+          example:
+            brightness: "80"
+        user_id:
+          type: string
+          format: uuid
+          description: ID пользователя-инициатора
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        house_id:
+          type: string
+          format: uuid
+          description: ID дома
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      required:
+        - command_id
+        - device_id
+        - command_type
+        - user_id
+        - house_id
+
+    CommandResult:
+      type: object
+      properties:
+        status:
+          type: string
+          const: success
+          description: Статус выполнения
+        message:
+          type: string
+          description: Сообщение о выполнении
+          example: "Команда выполнена успешно"
+        execution_time_ms:
+          type: integer
+          description: Время выполнения в мс
+          example: 250
+        executed_at:
+          type: string
+          format: date-time
+          description: Время выполнения
+          example: "2024-01-15T10:30:05Z"
+      required:
+        - status
+        - execution_time_ms
+        - executed_at
+
+    # === COMMON ===
+    EventMetadata:
+      type: object
+      properties:
+        source_service:
+          type: string
+          const: users
+        correlation_id:
+          type: string
+        event_time:
+          type: string
+          format: date-time
+      required:
+        - source_service
+        - correlation_id
+        - event_time

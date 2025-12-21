@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package auto_rules;
+
+// Сервис для управления правилами автоматизации
+service AutoRulesService {
+// Ручки в стадии разработки
+}
+
